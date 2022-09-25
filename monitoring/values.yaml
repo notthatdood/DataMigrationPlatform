@@ -1,0 +1,15 @@
+enablePrometheus: true
+enableGrafana: true
+enableThanos: false
+
+grafana:
+  admin:
+    password: tarea1
+
+thanos:
+  volumePermissions:
+    enabled: true
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
