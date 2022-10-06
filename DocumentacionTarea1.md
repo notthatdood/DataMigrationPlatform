@@ -11,7 +11,7 @@ Antes de ejecutar cualquier comando se debe tener instalado en el equipo:
 
 **Con Minikube**  
 
-Se debe clonar el repo de github: https://github.com/notthatdood/TareaCorta1.
+Se debe clonar el repo de github: https://github.com/notthatdood/DataMigrationPlatform.
 Luego se abre powershell y se hace un change directory a donde se haya colocado este repo.
 
 #### Instalar las herramientas de monitoreo y bases de datos
