@@ -18,18 +18,19 @@ helm repo add bitnami https://charts.bitnami.com/bitnami
 
 helm dependency build monitoring
 helm dependency build databases
-helm dependency build rabbitmq
+helm dependency build components
 
 helm dependency update monitoring
 helm dependency update databases
-helm dependency update rabbitmq
+helm dependency update components
 
 
 #importante primero instalar el de monitoring para que se cree la definición del serviceMonitor
 helm install monitoring monitoring
 helm install databases databases #--render-subchart-notes
+helm install components components
 
-helm install rabbitmq bitnami/rabbitmq
+
 
 #helm install kibana bitnami/kibana --set elasticsearch.hosts[0]=localhost --set elasticsearch.port=9200
 
