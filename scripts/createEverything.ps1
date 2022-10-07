@@ -35,10 +35,10 @@ helm install components components
 #helm install kibana bitnami/kibana --set elasticsearch.hosts[0]=localhost --set elasticsearch.port=9200
 
 
-#port forwarding de ES y Kibana
+#port forwarding de ES y rabbitmq
 #TODO: revisar el comando curl
 #kubectl port-forward --namespace default svc/databases-elasticsearch 9200:9200
-#kubectl port-forward svc/databases-kibana 5601:5601
+#kubectl port-forward --namespace default svc/components-rabbitmq 5672:5672
 
 #para ver el estado de los pods puede ser en lens o con este comando
 #kubectl get pods
