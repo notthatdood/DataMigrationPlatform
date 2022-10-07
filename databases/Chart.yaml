@@ -27,8 +27,6 @@ dependencies:
     - name: elasticsearch
       version: "19.4.0"
       repository: https://charts.bitnami.com/bitnami
-      condition: enableECKOperator
     - name: mariadb
       version: "11.3.0"
       repository: https://charts.bitnami.com/bitnami
-      condition: enableMariaDB

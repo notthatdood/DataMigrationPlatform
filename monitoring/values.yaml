@@ -4,7 +4,7 @@ enableThanos: false
 
 grafana:
   admin:
-    password: tarea1
+    password: password
 
 thanos:
   volumePermissions:

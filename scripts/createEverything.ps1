@@ -15,22 +15,32 @@ minikube start
 
 #Para crear las dependencias y agregar el repo
 helm repo add bitnami https://charts.bitnami.com/bitnami
-helm dependency build databases
+
 helm dependency build monitoring
-helm dependency update databases
+helm dependency build databases
+
+
 helm dependency update monitoring
+helm dependency update databases
+
 
 #importante primero instalar el de monitoring para que se cree la definición del serviceMonitor
 helm install monitoring monitoring
-helm install databases databases --render-subchart-notes
+helm install databases databases #--render-subchart-notes
+
+#helm install kibana bitnami/kibana --set elasticsearch.hosts[0]=localhost --set elasticsearch.port=9200
+
 
 #port forwarding de ES y Kibana
 #TODO: revisar el comando curl
 #kubectl port-forward --namespace default svc/databases-elasticsearch 9200:9200
-#nosequehaceestocurl http://127.0.0.1:9200/
-#kubectl port-forward svc/databases-kibana 8080:5601
+#kubectl port-forward svc/databases-kibana 5601:5601
+
 #para ver el estado de los pods puede ser en lens o con este comando
 #kubectl get pods
+
+#pasarle host y puerto a kibana
+#helm upgrade --namespace default databases bitnami/kibana --set elasticsearch.hosts[0]="localhost",elasticsearch.port="9200"
 
 #para ver releases instalados
 #helm list
