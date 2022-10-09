@@ -12,8 +12,8 @@ for hit in resp['hits']['hits']:
     print(hit, "\n-----------------------------------------------")
 """
 
-resp = es.get(index="groups", id=1)
-print(resp['_source'])
+resp = es.search(index="groups", query={"match_all": {}})
+print(resp["hits"]["hits"])
 
 es.indices.refresh(index="groups")
 print(resp)

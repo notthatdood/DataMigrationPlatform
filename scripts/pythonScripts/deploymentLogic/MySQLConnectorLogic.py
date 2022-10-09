@@ -38,7 +38,7 @@ def processJob(es,channel,connection, resp, job):
         cur.execute("SHOW COLUMNS FROM "+datasource+"."+dbcommand[3]) 
     except mariadb.Error as e: 
         print(f"Error: {e}")
-    print("slist", selectList)
+    #print("slist", selectList)
     columnList=cur.fetchall()
     #print("clist", columnList)
     docs=[]
@@ -50,13 +50,17 @@ def processJob(es,channel,connection, resp, job):
             fieldCounter += 1
         docs.append(doc)
     job["docs"]=docs
-    #TODO: por alguna razón no sirve
-    
+    conn.close()
     return job
 
 def updateES(es, job):
-    print(job)
-    es.update(index="groups", document=job)
+    
+    resp = es.search(index="groups", query={"match_all": {}})
+    print("\n--------------------------------------------\n",resp["hits"]["hits"])
+    for hit in resp["hits"]["hits"]:
+        print("por acá", hit["_source"]["job_id"])
+        if hit["_source"]["job_id"]==job["job_id"]:
+            resp = es.index(index="groups", id=hit["_id"] , document=job)
     print(resp['_source'])
 
 
@@ -76,7 +80,7 @@ def main():
         resp = es.search(index="jobs", query={"match_all": {}})
         print("Got %d Hits:" % resp['hits']['total']['value'])
         job = processJob(es, channel, connection, dict(resp), str(body))
-        
+        updateES(es, job)
 
 
 
