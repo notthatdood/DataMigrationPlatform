@@ -1,0 +1,6 @@
+
+'expression': 'SELECT %{field_description}% FROM %{table}% WHERE %{field_owner}% = %{doc_field}%', 
+                    
+'fields_mapping': {
+'field_description': 'description', 
+'field_owner': 'owner'
