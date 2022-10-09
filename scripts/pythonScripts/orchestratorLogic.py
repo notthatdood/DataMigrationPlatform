@@ -27,17 +27,22 @@ def getTotalRegisters(expression, datasource, groupSize):
     conn.close()
     return total // int(groupSize) + 1
 
-def sendInfoToES(jobid, groupTotal, es):
+def sendInfoToESandRabbitMQ(q, jobid, groupTotal, es, channel, connection):
     doc={
         "job_id": jobid,
         "group_id": jobid +"-"+ str(groupTotal)
     }
     resp = es.index(index="groups", id=1, document=doc)
     print(resp['result'])
+    channel.queue_declare(queue=q)
+
+    channel.basic_publish(exchange='', routing_key='hello', body='Hello World!')
+    print("Sent to queue")
+    connection.close()
 
 
 
-def processJob(resp, es):
+def processJob(resp, es, channel, connection):
     for hit in resp['hits']['hits']:
         if hit["_source"]["status"]=="new":
             hit["_source"]["status"]="In-Progress"
@@ -48,9 +53,12 @@ def processJob(resp, es):
             print(resp['result'])
             #Creo que esto es una caballada pero sirve
             total= getTotalRegisters(hit["_source"]["source"]["expression"], hit["_source"]["source"]["data_source"], hit["_source"]["source"]["grp_size"] )
-            sendInfoToES(hit["_source"]["job_id"], total, es)
+            for stage in hit["_source"]["stages"]:
+                if stage["name"] == "extract":
+                    queue = stage["source_queue"]
+                    sendInfoToESandRabbitMQ(queue, hit["_source"]["job_id"], total, es, channel, connection)
+                    break
 """
-
 
 
 channel.queue_declare(queue='regex_queue')
@@ -67,9 +75,9 @@ connection.close()
 
 def main():
     #RabbitMQ connection
-    #credentials = pika.PlainCredentials('user', 'password')
-    #connection = pika.BlockingConnection(pika.ConnectionParameters('localhost',5672,'/',credentials))
-    #channel = connection.channel()
+    credentials = pika.PlainCredentials('user', 'password')
+    connection = pika.BlockingConnection(pika.ConnectionParameters('localhost',5672,'/',credentials))
+    channel = connection.channel()
     #ES connection
     es = Elasticsearch(hosts="https://localhost:9200", http_auth=("elastic","password"),verify_certs=False)
     #Acquiring job table
@@ -77,6 +85,6 @@ def main():
         es.indices.refresh(index="jobs")
         resp = es.search(index="jobs", query={"match_all": {}})
         print("Got %d Hits:" % resp['hits']['total']['value'])
-        processJob(dict(resp), es)
+        processJob(dict(resp), es, channel, connection)
         time.sleep(20)
 main()
