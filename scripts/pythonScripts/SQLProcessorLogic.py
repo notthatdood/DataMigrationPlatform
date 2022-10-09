@@ -1,5 +1,4 @@
 #Code from: https://elasticsearch-py.readthedocs.io/en/v8.4.3/
-from datetime import datetime
 from elasticsearch import Elasticsearch
 
 
