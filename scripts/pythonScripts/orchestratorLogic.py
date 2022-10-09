@@ -12,7 +12,7 @@ from elasticsearch import Elasticsearch
 def getTotalRegisters(expression, datasource, groupSize):
     #MariaDB connection
     conn = mariadb.connect(
-    user="admin",
+    user="root",
     password="password",
     host="localhost",
     port=3306,
@@ -22,11 +22,18 @@ def getTotalRegisters(expression, datasource, groupSize):
         cur.execute(expression) 
     except mariadb.Error as e: 
         print(f"Error: {e}")
-
     total=len(cur.fetchall())
+    print("total registros: ", total)
     conn.close()
     return total // int(groupSize) + 1
 
+def sendInfoToES(jobid, groupTotal, es):
+    doc={
+        "job_id": jobid,
+        "group_id": jobid +"-"+ str(groupTotal)
+    }
+    resp = es.index(index="groups", id=1, document=doc)
+    print(resp['result'])
 
 
 
@@ -37,12 +44,11 @@ def processJob(resp, es):
             print("a document has changed to In-Progress status")
             print("----------------------------///////////////////////////////////=============================")
             doc=json.dumps(dict(hit["_source"]))
-            #resp = es.index(index="jobs", id=hit["_id"], document=doc)
-            #print(resp['result'])
-            print("caaaaambiaaaaaar")
+            resp = es.index(index="jobs", id=hit["_id"], document=doc)
+            print(resp['result'])
             #Creo que esto es una caballada pero sirve
-            print(getTotalRegisters(hit["_source"]["source"]["expression"], hit["_source"]["source"]["data_source"], hit["_source"]["source"]["grp_size"] ))
-
+            total= getTotalRegisters(hit["_source"]["source"]["expression"], hit["_source"]["source"]["data_source"], hit["_source"]["source"]["grp_size"] )
+            sendInfoToES(hit["_source"]["job_id"], total, es)
 """
 
 
