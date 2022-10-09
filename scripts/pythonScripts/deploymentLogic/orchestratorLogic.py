@@ -58,17 +58,7 @@ def processJob(resp, es, channel, connection):
                     queue = stage["source_queue"]
                     sendInfoToESandRabbitMQ(queue, hit["_source"]["job_id"], total, es, channel, connection)
                     break
-"""
 
-
-channel.queue_declare(queue='regex_queue')
-channel.queue_declare(queue='SQLProcessor_queue')
-
-channel.basic_publish(exchange='', routing_key='regex_queue', body='pal regex queue')
-channel.basic_publish(exchange='', routing_key='SQLProcessor_queue', body='pal SQL Processor queue')
-
-connection.close()
-"""
 
 
 

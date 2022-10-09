@@ -89,7 +89,7 @@ doc= {
     ]
 }
 
-resp = es.index(index="jobs", id=1, document=doc)
+resp = es.index(index="jobs", document=doc)
 print(resp['result'])
 
 
