@@ -1,22 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: regex-producer
+  name: orchestrator
   labels:
-    app: regex-producer
+    app: orchestrator
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: regex-producer
+      app: orchestrator
   template:
     metadata:
       labels:
-        app: regex-producer
+        app: orchestrator
     spec:
       containers:
-      - name: regex-producer
-        image: img
+      - name: orchestrator
+        image: israelhercan/orchestrator-image
         resources:
           limits:
             memory: "128Mi"
