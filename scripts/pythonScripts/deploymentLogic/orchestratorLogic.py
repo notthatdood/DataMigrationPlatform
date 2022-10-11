@@ -38,7 +38,6 @@ def sendInfoToESandRabbitMQ(q, jobid, groupTotal, es, channel, connection):
 
     channel.basic_publish(exchange='', routing_key= q , body=json.dumps(doc))
     print("Sent to queue", q)
-    connection.close()
 
 
 

@@ -19,8 +19,6 @@ doc = {
         "field_owner": "owner",
     }
 }
-#resp = es.index(index="jobs", id=2, document=doc)
-#print(resp['result'])
 
 resp = es.get(index="jobs", id=1)
 print(resp['_source'])
@@ -42,8 +40,7 @@ for hit in resp['hits']['hits']:
         print("to replace: " + "%{"+key+"}%")
         replacedExpression = replacedExpression.replace("%{"+key+"}%",hit["_source"]["fields_mapping"][key])
     print(replacedExpression)
-    
-    
+
 
 
 

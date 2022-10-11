@@ -54,15 +54,28 @@ def processJob(es,channel,connection, resp, job):
     return job
 
 def updateES(es, job):
-    
     resp = es.search(index="groups", query={"match_all": {}})
     print("\n--------------------------------------------\n",resp["hits"]["hits"])
     for hit in resp["hits"]["hits"]:
-        print("por acá", hit["_source"]["job_id"])
         if hit["_source"]["job_id"]==job["job_id"]:
             resp = es.index(index="groups", id=hit["_id"] , document=job)
     print(resp['_source'])
 
+def sendToQueue(channel, doc, resp):
+    for hit in resp['hits']['hits']:
+        for stage in hit["_source"]["stages"]:
+            if stage["name"] == "transform":
+                for transformation1 in stage['transform']:
+                    if transformation1['name'] == 'extract':
+                        for transformation2 in stage['transform']:
+                            if transformation2['name'] in transformation1['destination_queue']:
+                                q = transformation2['source_queue']
+                                channel.queue_declare(queue=q)
+
+                                channel.basic_publish(exchange='', routing_key= q , body=json.dumps(doc))
+                                print("Sent to queue", q)
+                                break
+    
 
 def main():
     #RabbitMQ connection
@@ -71,7 +84,7 @@ def main():
     channel = connection.channel()
     #ES connection
     es = Elasticsearch(hosts="https://localhost:9200", http_auth=("elastic","password"),verify_certs=False)
-    #Acquiring job table
+
     channel.queue_declare(queue='extract')
 
     def callback(ch, method, properties, body):
@@ -81,6 +94,7 @@ def main():
         print("Got %d Hits:" % resp['hits']['total']['value'])
         job = processJob(es, channel, connection, dict(resp), str(body))
         updateES(es, job)
+        sendToQueue(channel, str(body), resp)
 
 
 
