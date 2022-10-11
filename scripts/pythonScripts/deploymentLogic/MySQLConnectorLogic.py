@@ -59,22 +59,23 @@ def updateES(es, job):
     for hit in resp["hits"]["hits"]:
         if hit["_source"]["job_id"]==job["job_id"]:
             resp = es.index(index="groups", id=hit["_id"] , document=job)
-    print(resp['_source'])
+    #print(resp['_source'])
 
 def sendToQueue(channel, doc, resp):
     for hit in resp['hits']['hits']:
-        for stage in hit["_source"]["stages"]:
-            if stage["name"] == "transform":
-                for transformation1 in stage['transform']:
-                    if transformation1['name'] == 'extract':
-                        for transformation2 in stage['transform']:
-                            if transformation2['name'] in transformation1['destination_queue']:
-                                q = transformation2['source_queue']
+        for stage1 in hit["_source"]["stages"]:
+            if stage1["name"] == "extract":
+                for stage2 in hit["_source"]["stages"]:
+                    if stage2["name"] == "transform":
+                        for transformation in stage2['transformation']:
+                            if transformation['name'] in stage1['destination_queue']:
+                                q = transformation['source_queue']
                                 channel.queue_declare(queue=q)
 
-                                channel.basic_publish(exchange='', routing_key= q , body=json.dumps(doc))
+                                channel.basic_publish(exchange='', routing_key= q , body=doc)
+                                print(doc)
                                 print("Sent to queue", q)
-                                break
+                                return
     
 
 def main():
