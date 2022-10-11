@@ -29,7 +29,9 @@ def getTotalRegisters(expression, datasource, groupSize):
     conn = mariadb.connect(
     user="root",
     password="password",
+    #password= MDB_PASSWORD,
     host="localhost",
+    #host= MDB_ENDPOINT,
     port=3306,
     database=datasource)
     cur = conn.cursor() 
@@ -42,18 +44,17 @@ def getTotalRegisters(expression, datasource, groupSize):
     conn.close()
     return total // int(groupSize) + 1
 
-def sendInfoToESandRabbitMQ(q, jobid, groupTotal, es, channel, connection):
+def sendInfoToESandRabbitMQ(q, jobid, groupTotal, es, channel, docId):
     doc={
         "job_id": jobid,
         "group_id": jobid +"-"+ str(groupTotal)
     }
-    resp = es.index(index="groups", id=1, document=doc)
+    resp = es.index(index="groups", id=docId, document=doc)
     print(resp['result'])
     channel.queue_declare(queue=q)
 
     channel.basic_publish(exchange='', routing_key= q , body=json.dumps(doc))
     print("Sent to queue", q)
-    connection.close()
 
 
 
@@ -71,7 +72,7 @@ def processJob(resp, es, channel, connection):
             for stage in hit["_source"]["stages"]:
                 if stage["name"] == "extract":
                     queue = stage["source_queue"]
-                    sendInfoToESandRabbitMQ(queue, hit["_source"]["job_id"], total, es, channel, connection)
+                    sendInfoToESandRabbitMQ(queue, hit["_source"]["job_id"], total, es, channel, connection, hit['_id'])
                     break
 
 
