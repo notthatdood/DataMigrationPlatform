@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: regex-producer
+  labels:
+    app: regex-producer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: regex-producer
+  template:
+    metadata:
+      labels:
+        app: regex-producer
+    spec:
+      containers:
+      - name: regex-producer
+        image: img
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        env:
+          - name: DATAFROMK8S
+            value: "Hey"
+          - name: RABBITMQ
+            value: "databases-rabbitmq"
+          - name: RABBITQUEUE
+            value: "queue"
+          - name: RABITPASS
+            valueFrom:
+              secretKeyRef:
+                name: databases-rabbitmq
+                key: rabbitmq-password
+                optional: false
+          - name: ESENDPOINT
+            value: quickstart-es-default #validar
+          - name: ESPASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: quickstart-es-elastic-user #validar
+                key: elastic
+                optional: false
