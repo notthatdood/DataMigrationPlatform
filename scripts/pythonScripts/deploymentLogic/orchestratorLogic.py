@@ -34,8 +34,8 @@ def sendInfoToESandRabbitMQ(q, jobid, groupTotal, es, channel, connection, docId
     }
     resp = es.index(index="groups", id=docId, document=doc)
     print(resp['result'])
+    
     channel.queue_declare(queue=q)
-
     channel.basic_publish(exchange='', routing_key= q , body=json.dumps(doc))
     print("Sent to queue", q)
 

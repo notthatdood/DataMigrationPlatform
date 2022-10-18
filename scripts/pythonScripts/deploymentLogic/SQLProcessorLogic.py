@@ -5,11 +5,11 @@ import mariadb
 from elasticsearch import Elasticsearch
 import urllib3
 
-#Disabling warnings because wr are not using certificates
+#Disabling warnings because we are not using certificates
 urllib3.disable_warnings()
 
 #Takes the sql query with the replaced values and queries the mariadb
-def executeSQLExpression(exp, datasource, job, es):
+def executeSQLExpression(exp, datasource, job, es, channel):
     conn = mariadb.connect(
         user="root",
         password="password",
@@ -21,17 +21,25 @@ def executeSQLExpression(exp, datasource, job, es):
     resp = es.search(index="groups", query={"match_all": {}})
     for hit in resp["hits"]["hits"]:
         if hit["_source"]["group_id"]==job["group_id"]:
-            for document in hit['_source']['docs']:
-                replacedExpression = exp.replace("%{doc_field}%",str(document['id']))
+            for doc in hit['_source']['docs']:
+                replacedExpression = exp.replace("%{doc_field}%",str(doc['id']))
                 try:
                     print("replaced expression: ",replacedExpression) 
                     cur.execute(replacedExpression) 
                 except mariadb.Error as e: 
                     print(f"Error: {e}")
                 for row in cur: 
-                    print("resultRow: ", row)
+                    #Here we will be updating the groups index
+                    row=row[0]
+                    #row=row[:len(row)-2]
+                    doc["description"]=row
+                    hit["_source"]["docs"][int(doc['id']) - 1]=doc
+    resp = es.index(index="groups", id=hit["_id"], document=hit["_source"])
+    #print(resp['result'])
+    #print("resultRow: ", row)
+    #print("resuldoc", doc)
 
-#Recieves the job, changes the query and calls executeSQLExpression to query mariadb 
+#Receives the job, changes the query and calls executeSQLExpression to query mariadb 
 def processJob(resp, es, job, channel):
     job = job[2:]
     job = job[:len(job)-1]
@@ -68,11 +76,15 @@ def processJob(resp, es, job, channel):
                             grpSize=hit["_source"]["source"]["grp_size"]
                             replacedExpression=replacedExpression + " LIMIT " + str(int(job["group_id"].split("-")[1]) -1) +", " + grpSize
 
-                            executeSQLExpression(replacedExpression, datasource, job, es)
+                            executeSQLExpression(replacedExpression, datasource, job, es, channel)
 
                             for transformation2 in stage['transformation']:
+                                #Enviamos el mensaje al queue correspondiente
                                 if transformation2['name'] in transformation['destination_queue']:
-                                    channel.basic_publish(exchange='', routing_key= transformation2['source_queue'] , body=json.dumps(job))
+                                    q= transformation2['source_queue']
+                                    channel.queue_declare(queue=q)
+                                    channel.basic_publish(exchange='', routing_key= q, body=json.dumps(job))
+                                    print("Sent to queue", q)
                             #Vamos a eliminar todos los transformations ya hechos para evitar que se repitan
                             #Es una opción pero si hay más de un grupo no sirve
                             #del hit["_source"]['stages'][stageCount]['transformation'][transformationCount] 
