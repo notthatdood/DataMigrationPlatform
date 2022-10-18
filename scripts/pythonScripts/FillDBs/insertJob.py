@@ -56,7 +56,7 @@ doc= {
                     "type": "sql_transform",
                     "table": "car",
                     "expression": "SELECT %{field_description}% FROM %{table}% WHERE %{field_owner}% = %{doc_field}%",
-                    "source_data_source": "database_car",
+                    "source_data_source": "car_db",
                     "destination_data_source": "destination_es",
                     "doc_field": "id",
                     "source_queue": "sql_queue",

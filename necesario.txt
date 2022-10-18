@@ -1,0 +1,12 @@
+dependencias que instalé
+
+python - m pip install pika--upgrade
+python - m pip install elasticsearch
+python - m pip install mysql
+python - m pip install mariadb
+
+
+primero crear el cluster
+luego hacer los port forwards de mariadb, elastic y rabbitmq
+luego correr el script de populate dbs
+luego el de insert jobs y con eso debería estar 

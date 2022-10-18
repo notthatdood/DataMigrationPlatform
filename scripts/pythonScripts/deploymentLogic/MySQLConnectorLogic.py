@@ -70,8 +70,10 @@ def sendToQueue(channel, doc, resp):
                         for transformation in stage2['transformation']:
                             if transformation['name'] in stage1['destination_queue']:
                                 q = transformation['source_queue']
+                                doc=doc[2:]
+                                doc=doc[:len(doc)-1]
+                                doc = doc.replace("'", "\"")
                                 channel.queue_declare(queue=q)
-
                                 channel.basic_publish(exchange='', routing_key= q , body=doc)
                                 print(doc)
                                 print("Sent to queue", q)

@@ -1,13 +1,42 @@
 #Code from: https://elasticsearch-py.readthedocs.io/en/v8.4.3/
 import pika, sys, os
 import json
+import mariadb 
 from elasticsearch import Elasticsearch
+import urllib3
 
+#Disabling warnings because wr are not using certificates
+urllib3.disable_warnings()
 
+#Takes the sql query with the replaced values and queries the mariadb
+def executeSQLExpression(exp, datasource, job, es):
+    conn = mariadb.connect(
+        user="root",
+        password="password",
+        host="localhost",
+        port=3306,
+        database=datasource
+        )
+    cur = conn.cursor() 
+    resp = es.search(index="groups", query={"match_all": {}})
+    for hit in resp["hits"]["hits"]:
+        if hit["_source"]["group_id"]==job["group_id"]:
+            for document in hit['_source']['docs']:
+                replacedExpression = exp.replace("%{doc_field}%",str(document['id']))
+                try:
+                    print("replaced expression: ",replacedExpression) 
+                    cur.execute(replacedExpression) 
+                except mariadb.Error as e: 
+                    print(f"Error: {e}")
+                for row in cur: 
+                    print("resultRow: ", row)
+
+#Recieves the job, changes the query and calls executeSQLExpression to query mariadb 
 def processJob(resp, es, job, channel):
-    job=job[2:]
-    job=job[:len(job)-1]
+    job = job[2:]
+    job = job[:len(job)-1]
     job = job.replace("'", "\"")
+    print(job)
     job=json.loads(job)
     print(job)
     #perdón por la chanchada profe
@@ -26,16 +55,21 @@ def processJob(resp, es, job, channel):
                             keyList=list(transformation["fields_mapping"].keys())
                             replacedExpression = str(transformation["expression"])
                             #here we will replace the necessary strings
-                            print("to replace: " + "%{doc_field}%")
-                            replacedExpression = replacedExpression.replace("%{doc_field}%",transformation["doc_field"])
                             print("to replace: " + "%{table}%")
                             replacedExpression = replacedExpression.replace("%{table}%",transformation["table"])
+
                             #this iterates through the fields that will be replaced
                             for key in keyList:
                                 print("to replace: " + "%{"+key+"}%")
                                 replacedExpression = replacedExpression.replace("%{"+key+"}%",transformation["fields_mapping"][key])
                             print(replacedExpression)
                             
+                            datasource = transformation['source_data_source']
+                            grpSize=hit["_source"]["source"]["grp_size"]
+                            replacedExpression=replacedExpression + " LIMIT " + str(int(job["group_id"].split("-")[1]) -1) +", " + grpSize
+
+                            executeSQLExpression(replacedExpression, datasource, job, es)
+
                             for transformation2 in stage['transformation']:
                                 if transformation2['name'] in transformation['destination_queue']:
                                     channel.basic_publish(exchange='', routing_key= transformation2['source_queue'] , body=json.dumps(job))
@@ -45,6 +79,7 @@ def processJob(resp, es, job, channel):
                             #print(hit["_source"])
                             #es.index(index="jobs",id=hit["_id"], body=hit["_source"])
                             break
+
 
 def main():
     #RabbitMQ connection

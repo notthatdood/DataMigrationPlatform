@@ -63,8 +63,9 @@ cur.execute("CREATE OR REPLACE TABLE car (id int auto_increment, owner varchar(2
 
 
 try: 
-    cur.execute("INSERT INTO car (owner, description) VALUES (?, ?)", (658, "Toyota Corollacross BWC166, Blanco Perlado")) 
-    cur.execute("INSERT INTO car (owner, description) VALUES (?, ?)", (589, "Honda CRV HUJ-987, Dorado")) 
+    cur.execute("INSERT INTO car (owner, description) VALUES (?, ?)", (1, "Toyota Corollacross BWC-166, Blanco Perlado")) 
+    cur.execute("INSERT INTO car (owner, description) VALUES (?, ?)", (2, "Honda CRV HUJ-987, Dorado")) 
+    cur.execute("INSERT INTO car (owner, description) VALUES (?, ?)", (3, "Toyota Corollacross LMN-567, Blanco Perlado")) 
 except mariadb.Error as e: 
     print(f"Error: {e}")
 

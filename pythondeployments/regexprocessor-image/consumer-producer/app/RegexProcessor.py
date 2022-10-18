@@ -5,14 +5,14 @@ import json
 
 
 #Regular expression match logic
-txt = "Toyota Corollacross BWC-166, Blanco Perlado"
-txt1 = "Honda CRV HUJ-987, Dorado"
+#txt = "Toyota Corollacross BWC-166, Blanco Perlado"
+#txt1 = "Honda CRV HUJ-987, Dorado"
 
 #Returns a list with the match
 #Parameters need to be replaced by the ones provided on the job file.
-x = re.findall("^.*([a-zA-z]{3}-[0-9]{3}).*$", txt)
-x1 = re.findall("^.*([a-zA-z]{3}-[0-9]{3}).*$", txt1)
-print(x,x1)
+#x = re.findall("^.*([a-zA-z]{3}-[0-9]{3}).*$", txt)
+#x1 = re.findall("^.*([a-zA-z]{3}-[0-9]{3}).*$", txt1)
+#print(x,x1)
 
 
 def processJob(resp, es, job, channel):
@@ -34,13 +34,12 @@ def processJob(resp, es, job, channel):
                     for transformation in stage['transformation']:
                         if transformation['type']=='regex_transform':
                             transformationCount += 1
-                            
-                            
                             for transformation2 in stage['transformation']:
                                 if transformation2['name'] in transformation['destination_queue']:
+                                    print(transformation2['destination_queue'])
                                     channel.basic_publish(exchange='', routing_key= transformation2['source_queue'] , body=json.dumps(job))
                             #Vamos a eliminar todos los transformations ya hechos para evitar que se repitan
-                            #Es una opción pero si hay más de un grupo no sirve
+                            #Es una opción, pero si hay más de un grupo no sirve
                             #del hit["_source"]['stages'][stageCount]['transformation'][transformationCount] 
                             #print(hit["_source"])
                             #es.index(index="jobs",id=hit["_id"], body=hit["_source"])
