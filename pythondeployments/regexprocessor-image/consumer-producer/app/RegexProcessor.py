@@ -7,44 +7,48 @@ import json
 #Regular expression match logic
 #txt = "Toyota Corollacross BWC-166, Blanco Perlado"
 #txt1 = "Honda CRV HUJ-987, Dorado"
-
 #Returns a list with the match
-#Parameters need to be replaced by the ones provided on the job file.
+##Parameters need to be replaced by the ones provided on the job file.
 #x = re.findall("^.*([a-zA-z]{3}-[0-9]{3}).*$", txt)
 #x1 = re.findall("^.*([a-zA-z]{3}-[0-9]{3}).*$", txt1)
 #print(x,x1)
 
+def executeRegEx(job, es, regEx, group, field, objectiveField):
+    #TODO: falta agregar la validación de group
+    resp = es.search(index="groups", query={"match_all": {}})
+    for hit in resp["hits"]["hits"]:
+        if hit["_source"]["group_id"]==job["group_id"]:
+            for doc in hit['_source']['docs']:
+                try:
+                    regEx=regEx.replace(" ", "")
+                    print("regex: ", regEx)
+                    print("description ", doc["description"])
+                    print("result", re.findall(regEx, str(doc["description"])))
+                    doc[objectiveField] = re.findall(regEx, str(doc["description"]))[0]
+                    hit["_source"]["docs"][int(doc['id']) - 1]=doc
+                except:
+                    print("This document didn't have the required field: ", field)
+
+    resp = es.index(index="groups", id=hit["_id"], document=hit["_source"])
+
 
 def processJob(resp, es, job, channel):
-    job=job[2:]
-    job=job[:len(job)-1]
+    job = job[2:]
+    job = job[:len(job)-1]
     job = job.replace("'", "\"")
     job=json.loads(job)
-    print(job)
-    #perdón por la chanchada profe
-    hitCount =-1
     for hit in resp['hits']['hits']:
-        hitCount+=1
-        stageCount=-1
         if hit["_source"]["job_id"]==job["job_id"]:
             for stage in hit["_source"]['stages']: 
-                stageCount += 1
                 if stage['name']=='transform': 
-                    transformationCount =- 1
                     for transformation in stage['transformation']:
                         if transformation['type']=='regex_transform':
-                            transformationCount += 1
-                            for transformation2 in stage['transformation']:
-                                if transformation2['name'] in transformation['destination_queue']:
-                                    print(transformation2['destination_queue'])
-                                    channel.basic_publish(exchange='', routing_key= transformation2['source_queue'] , body=json.dumps(job))
-                            #Vamos a eliminar todos los transformations ya hechos para evitar que se repitan
-                            #Es una opción, pero si hay más de un grupo no sirve
-                            #del hit["_source"]['stages'][stageCount]['transformation'][transformationCount] 
-                            #print(hit["_source"])
-                            #es.index(index="jobs",id=hit["_id"], body=hit["_source"])
+                            regEx = transformation["regex_config"]["regex_expression"]
+                            field = transformation["regex_config"]["field"]
+                            group = transformation["regex_config"]["group"]
+                            objectiveField = transformation["field_name"]
+                            executeRegEx(job, es, str(regEx), group, field, objectiveField)
                             break
-
 
 
 def main():
@@ -71,5 +75,3 @@ def main():
     channel.start_consuming()
 
 main()
-
-#Falta de terminar, lógica de reemplazo es la misma que la de SQL Processor

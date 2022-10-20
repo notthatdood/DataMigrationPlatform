@@ -35,31 +35,19 @@ def executeSQLExpression(exp, datasource, job, es, channel):
                     doc["description"]=row
                     hit["_source"]["docs"][int(doc['id']) - 1]=doc
     resp = es.index(index="groups", id=hit["_id"], document=hit["_source"])
-    #print(resp['result'])
-    #print("resultRow: ", row)
-    #print("resuldoc", doc)
 
 #Receives the job, changes the query and calls executeSQLExpression to query mariadb 
 def processJob(resp, es, job, channel):
     job = job[2:]
     job = job[:len(job)-1]
     job = job.replace("'", "\"")
-    print(job)
     job=json.loads(job)
-    print(job)
-    #perdón por la chanchada profe
-    hitCount =-1
     for hit in resp['hits']['hits']:
-        hitCount+=1
-        stageCount=-1
         if hit["_source"]["job_id"]==job["job_id"]:
             for stage in hit["_source"]['stages']: 
-                stageCount += 1
                 if stage['name']=='transform': 
-                    transformationCount =- 1
                     for transformation in stage['transformation']:
                         if transformation['type']=='sql_transform':
-                            transformationCount += 1
                             keyList=list(transformation["fields_mapping"].keys())
                             replacedExpression = str(transformation["expression"])
                             #here we will replace the necessary strings
@@ -87,9 +75,6 @@ def processJob(resp, es, job, channel):
                                     print("Sent to queue", q)
                             #Vamos a eliminar todos los transformations ya hechos para evitar que se repitan
                             #Es una opción pero si hay más de un grupo no sirve
-                            #del hit["_source"]['stages'][stageCount]['transformation'][transformationCount] 
-                            #print(hit["_source"])
-                            #es.index(index="jobs",id=hit["_id"], body=hit["_source"])
                             break
 
 
