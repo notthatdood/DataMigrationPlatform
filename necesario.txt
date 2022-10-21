@@ -5,6 +5,7 @@ python - m pip install elasticsearch
 python - m pip install mysql
 python - m pip install mariadb
 python - m pip install prometheus-client
+pip install prometheus-client
 
 
 primero crear el cluster
