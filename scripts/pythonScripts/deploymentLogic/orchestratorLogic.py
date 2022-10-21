@@ -1,6 +1,8 @@
 #code from https://www.rabbitmq.com/tutorials/tutorial-one-python.html
 #Code from: https://elasticsearch-py.readthedocs.io/en/v8.4.3/
+#code from https://github.com/prometheus/client_python
 #!/usr/bin/env python
+from prometheus_client import start_http_server, Summary
 import json 
 import time
 import pika
@@ -8,6 +10,8 @@ import mariadb
 from elasticsearch import Elasticsearch
 #Escuchar db de elasticSearch
 
+#Create a metric in prometheus to track time spent and requests made.
+REQUEST_TIME = Summary('request_processing_seconds', 'Time spent processing request')
 
 def getTotalRegisters(expression, datasource, groupSize):
     #MariaDB connection
@@ -61,7 +65,8 @@ def processJob(resp, es, channel, connection):
 
 
 
-
+# Decorate function with metric.
+@REQUEST_TIME.time()
 def main():
     #RabbitMQ connection
     credentials = pika.PlainCredentials('user', 'password')
@@ -76,4 +81,7 @@ def main():
         print("Got %d Hits:" % resp['hits']['total']['value'])
         processJob(dict(resp), es, channel, connection)
         time.sleep(10)
+
+# Start up the server to expose the metrics.
+start_http_server(8000)        
 main()
