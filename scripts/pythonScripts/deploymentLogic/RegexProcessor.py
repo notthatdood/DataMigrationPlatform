@@ -1,3 +1,5 @@
+#code from https://www.rabbitmq.com/tutorials/tutorial-one-python.html
+#Code from: https://elasticsearch-py.readthedocs.io/en/v8.4.3/
 from elasticsearch import Elasticsearch
 import re
 import pika
