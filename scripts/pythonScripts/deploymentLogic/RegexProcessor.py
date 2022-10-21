@@ -22,7 +22,6 @@ def executeRegEx(job, es, regEx, group, field, objectiveField):
         if hit["_source"]["group_id"]==job["group_id"]:
             for doc in hit['_source']['docs']:
                 try:
-                    #Me volé todos los espacios del regex expression por que solo así me funcionaba
                     regEx=regEx.replace(" ", "")
                     print("regex: ", regEx)
                     print("description ", doc["description"])

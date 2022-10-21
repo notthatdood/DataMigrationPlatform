@@ -6,8 +6,8 @@ credentials = pika.PlainCredentials('user', 'password')
 connection = pika.BlockingConnection(pika.ConnectionParameters('localhost',5672,'/',credentials))
 channel = connection.channel()
 
-channel.queue_declare(queue='regex_queue')
+channel.queue_declare(queue='ready')
 
-channel.basic_publish(exchange='', routing_key='regex_queue', body="{'job_id': 'job606', 'group_id': 'job606-1'}")
+channel.basic_publish(exchange='', routing_key='ready', body="{'job_id': 'job606', 'group_id': 'job606-1'}")
 print(" [x] Sent'")
 connection.close()
