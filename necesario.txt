@@ -1,10 +1,10 @@
 dependencias que instalé
 
-python - m pip install pika--upgrade
-python - m pip install elasticsearch
-python - m pip install mysql
-python - m pip install mariadb
-python - m pip install prometheus-client
+pip install pika--upgrade
+pip install elasticsearch
+pip install mysql
+pip install mariadb
+pip install prometheus-client
 
 
 primero crear el cluster
