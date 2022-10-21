@@ -11,7 +11,7 @@
 #Primero clonar el repo de github, entrar al directorio en el que se encuentra el repo
 
 #Inicializar minikube
-minikube start --cpus 4
+minikube start
 
 #Para crear las dependencias y agregar el repo
 helm repo add bitnami https://charts.bitnami.com/bitnami

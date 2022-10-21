@@ -1,4 +1,5 @@
 #code from https://www.rabbitmq.com/tutorials/tutorial-one-python.html
+#code from https://github.com/prometheus/client_python
 #!/usr/bin/env python
 from concurrent.futures import process
 from select import select
@@ -6,7 +7,11 @@ import pika, sys, os
 import json
 import pika
 from elasticsearch import Elasticsearch
-import mariadb 
+import mariadb
+from prometheus_client import start_http_server, Summary
+
+#Create a metric in prometheus to track time spent and requests made.
+REQUEST_TIME = Summary('request_processing_seconds', 'Time spent processing request')
 
 def processJob(es,channel,connection, resp, job):
     job=job[2:]
@@ -77,6 +82,8 @@ def sendToQueue(channel, doc, resp):
                                 break
     
 
+# Decorate function with metric.
+@REQUEST_TIME.time()
 def main():
     #RabbitMQ connection
     credentials = pika.PlainCredentials('user', 'password')
@@ -105,6 +112,8 @@ def main():
 
 if __name__ == '__main__':
     try:
+        # Start up the server to expose the metrics.
+        start_http_server(8000)
         main()
     except KeyboardInterrupt:
         print('Interrupted')
