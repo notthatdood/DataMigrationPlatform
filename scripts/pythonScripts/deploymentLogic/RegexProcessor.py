@@ -1,9 +1,11 @@
 #code from https://www.rabbitmq.com/tutorials/tutorial-one-python.html
 #Code from: https://elasticsearch-py.readthedocs.io/en/v8.4.3/
+#code from https://github.com/prometheus/client_python
 from elasticsearch import Elasticsearch
 import re
 import pika
 import json
+from prometheus_client import start_http_server, Summary
 
 
 #Regular expression match logic
@@ -14,6 +16,9 @@ import json
 #x = re.findall("^.*([a-zA-z]{3}-[0-9]{3}).*$", txt)
 #x1 = re.findall("^.*([a-zA-z]{3}-[0-9]{3}).*$", txt1)
 #print(x,x1)
+
+#Create a metric in prometheus to track time spent and requests made.
+REQUEST_TIME = Summary('request_processing_seconds', 'Time spent processing request')
 
 def executeRegEx(job, es, regEx, group, field, objectiveField):
     #TODO: falta agregar la validación de group
@@ -61,7 +66,8 @@ def processJob(resp, es, job, channel):
                                     print("Sent to queue", q)
                             break
 
-
+# Decorate function with metric.
+@REQUEST_TIME.time()
 def main():
     #RabbitMQ connection
     credentials = pika.PlainCredentials('user', 'password')
@@ -85,4 +91,6 @@ def main():
     print(' [*] Waiting for messages. To exit press CTRL+C')
     channel.start_consuming()
 
+# Start up the server to expose the metrics.
+start_http_server(8000)
 main()

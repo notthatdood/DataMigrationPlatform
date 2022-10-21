@@ -12,3 +12,4 @@ primero crear el cluster
 luego hacer los port forwards de mariadb, elastic y rabbitmq
 luego correr el script de populate dbs
 luego el de insert jobs y con eso debería estar 
+Se corre http://localhost:8000/ en el browser para ver las metricas de prometheus 
