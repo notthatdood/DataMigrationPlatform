@@ -51,7 +51,7 @@ def processJob(resp, es, job, channel):
                             keyList=list(transformation["fields_mapping"].keys())
                             replacedExpression = str(transformation["expression"])
                             #here we will replace the necessary strings
-                            print("to replace: " + "%{table}%")
+                            #print("to replace: " + "%{table}%")
                             replacedExpression = replacedExpression.replace("%{table}%",transformation["table"])
 
                             #this iterates through the fields that will be replaced
@@ -81,10 +81,10 @@ def processJob(resp, es, job, channel):
 def main():
     #RabbitMQ connection
     credentials = pika.PlainCredentials('user', 'password')
-    connection = pika.BlockingConnection(pika.ConnectionParameters('localhost',5672,'/',credentials))
+    connection = pika.BlockingConnection(pika.ConnectionParameters('localhost',5672,'/', credentials))
     channel = connection.channel()
     #ES connection
-    es = Elasticsearch(hosts="https://localhost:9200", http_auth=("elastic","password"),verify_certs=False)
+    es = Elasticsearch(hosts="https://localhost:9200", http_auth=("elastic","password"), verify_certs=False)
 
     channel.queue_declare(queue='sql_queue')
 

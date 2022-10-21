@@ -48,6 +48,15 @@ def processJob(resp, es, job, channel):
                             group = transformation["regex_config"]["group"]
                             objectiveField = transformation["field_name"]
                             executeRegEx(job, es, str(regEx), group, field, objectiveField)
+
+                            for stage2 in hit["_source"]['stages']:
+                                #Enviamos el mensaje al queue correspondiente
+                                #Busca que el nombre del queue coincida con el nombre indica
+                                if stage2['name'] in transformation['destination_queue']:
+                                    q = stage2['source_queue']
+                                    channel.queue_declare(queue = q)
+                                    channel.basic_publish(exchange='', routing_key= q, body=json.dumps(job))
+                                    print("Sent to queue", q)
                             break
 
 
