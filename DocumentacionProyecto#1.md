@@ -33,32 +33,35 @@ pip install prometheus-client
 ``` 
 [![Captura.png](https://i.postimg.cc/vTgHB5Xz/Captura.png)](https://postimg.cc/WqVPYFBF)
 
+4. Dentro del powershell correr los forwards de mariadb, elastic y rabbitmq (hacerlo uno en cada ventana para cortar tiempo)
 
-**Sin Minikube**  
+```sh
+kubectl port-forward --namespace default svc/components-rabbitmq 5672:5672
+``` 
+[![Captura1.png](https://i.postimg.cc/RFyxPhxp/Captura1.png)](https://postimg.cc/MM7LHWT1)
 
-1.Desde línea de comandos se debe ejecutar:
 ```sh
-helm install monitoring monitoring --dependency-build
-```  
-2.Luego descargar todas las dependencias de las herramientas a utilizar
-```sh
-helm install monitoring monitoring --dry-run
-```  
-2.Actualizamos las dependencias:  
-```sh
-helm install database database --dependency-build
-```  
-3.Para instalar las bases de datos se debe ejecutar el siguiente comando:  
-```sh
-helm install database database --dry-run
-```
-## **Configuración de ElasticSearch**
-1. En la línea de comandos escribimos el siguiente:
+kubectl port-forward --namespace default svc/databases-mariadb 3306:3306
+``` 
+[![Captura2.png](https://i.postimg.cc/yNpMdxx6/Captura2.png)](https://postimg.cc/FfcWC90w)
+
 ```sh
 kubectl port-forward --namespace default svc/databases-elasticsearch 9200:9200
-```
+``` 
+[![Captura3.png](https://i.postimg.cc/nz6N4Wq6/Captura3.png)](https://postimg.cc/hz1Cgpyr)
 
+5. Entrar al scripts/pythonScripts/fillDBs y correr script:
 
+```sh
+populateMariaDB.py
+``` 
+
+Y luego correr el siguiente script en lla misma carpeta:
+
+```sh
+insertJob.py
+``` 
+6. 
 ## **Configuración de grafana**
 
 Luego de tener instaladas las bases que vamos a utilizar y las herramientas que van a monitorear esa base de datos. Podemos ingresar a grafana.  
