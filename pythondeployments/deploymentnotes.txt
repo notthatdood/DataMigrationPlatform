@@ -1,0 +1,19 @@
+//Navegar al directorio /consumer-producer de cada uno de los cinco componentes (Orchestrator por ejemplo)
+//Esto es todo lo necesario para crear el deployment en Kubernetes.
+// Se hace docker pull del repositorio israelhercam en el que las imágenes de cada deployment ya están subidas.
+
+    docker pull israelhercam/orchestrator-image
+    kubectl apply -f consumer-producer.yaml
+
+
+//Para crear la imagen de cada component y subirla a un repositorio, se necesaitan los siguientes pasos.
+//Navegar al directorio /consumer-producer de cada uno de los cinco componentes (Orchestrator por ejemplo).
+
+    sudo docker login
+    sudo docker build -t [reponame]/[image-name] .
+    sudo docker images
+    sudo docker push [reponame]/[image-name]
+    kubectl apply -f consumer-producer.yaml
+
+//Eliminar el deployment creado
+    kubectl delete -f consumer-producer.yaml

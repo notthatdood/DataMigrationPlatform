@@ -1,7 +1,0 @@
-sudo docker login
-sudo docker build -t israelhercam/orchestrator-image
-sudo docker images
-//sudo docker -v israelhercam/orchestrator-image
-sudo docker push israelhercam/orchestrator-image
-kubectl apply -f consumer-producer.yaml
-//kubectl delete -f consumer-producer.yaml
