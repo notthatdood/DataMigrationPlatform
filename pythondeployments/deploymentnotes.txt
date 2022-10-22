@@ -6,7 +6,7 @@
     kubectl apply -f consumer-producer.yaml
 
 
-//Para crear la imagen de cada component y subirla a un repositorio, se necesaitan los siguientes pasos.
+//Para crear la imagen de cada componente y subirla a un repositorio, se necesaitan los siguientes pasos.
 //Navegar al directorio /consumer-producer de cada uno de los cinco componentes (Orchestrator por ejemplo).
 
     sudo docker login
