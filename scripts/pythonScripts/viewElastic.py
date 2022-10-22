@@ -13,4 +13,6 @@ for hit in resp['hits']['hits']:
 """
 
 resp = es.search(index="persona", query={"match_all": {}})
-print(resp["hits"]["hits"])
+#print(resp["hits"]["hits"])
+for hit in resp["hits"]["hits"]:
+    print(hit["_source"])
