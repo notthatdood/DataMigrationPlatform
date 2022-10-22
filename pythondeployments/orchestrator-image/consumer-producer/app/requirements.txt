@@ -1,3 +1,4 @@
 pika
 mariadb
 elasticsearch
+prometheus_client

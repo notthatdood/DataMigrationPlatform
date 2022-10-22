@@ -13,30 +13,12 @@ from elasticsearch import Elasticsearch
 #Create a metric in prometheus to track time spent and requests made.
 REQUEST_TIME = Summary('request_processing_seconds', 'Time spent processing request')
 
-#DATA=os.getenv('DATAFROMK8S')
-
-RABBIT_MQ_HOST=os.getenv('RABBITMQHOST')
-RABBIT_MQ_PASS=os.getenv('RABBITMQPASS')
-
-SOURCE_QUEUE=os.getenv('SOURCEQUEUE')
-DEST_QUEUE=os.getenv('DESTQUEUE')
-
-ES_ENDPOINT=os.getenv('ESENDPOINT')
-ES_PASSWORD=os.getenv('ESPASSWORD')
-ES_INDEX=os.getenv('ESINDEX')
-
-MDB_ENDPOINT=os.getenv('MDBENDPOINT')
-MDB_PASSWORD=os.getenv('MDBPASSWORD')
-
-
 def getTotalRegisters(expression, datasource, groupSize):
     #MariaDB connection
     conn = mariadb.connect(
     user="root",
     password="password",
-    #password= MDB_PASSWORD,
     host="localhost",
-    #host= MDB_ENDPOINT,
     port=3306,
     database=datasource)
     cur = conn.cursor() 
@@ -49,15 +31,15 @@ def getTotalRegisters(expression, datasource, groupSize):
     conn.close()
     return total // int(groupSize) + 1
 
-def sendInfoToESandRabbitMQ(q, jobid, groupTotal, es, channel, docId):
+def sendInfoToESandRabbitMQ(q, jobid, groupTotal, es, channel, connection, docId):
     doc={
         "job_id": jobid,
         "group_id": jobid +"-"+ str(groupTotal)
     }
     resp = es.index(index="groups", id=docId, document=doc)
     print(resp['result'])
+    
     channel.queue_declare(queue=q)
-
     channel.basic_publish(exchange='', routing_key= q , body=json.dumps(doc))
     print("Sent to queue", q)
 
@@ -98,8 +80,7 @@ def main():
         resp = es.search(index="jobs", query={"match_all": {}})
         print("Got %d Hits:" % resp['hits']['total']['value'])
         processJob(dict(resp), es, channel, connection)
-        time.sleep(20)
 
 # Start up the server to expose the metrics.
-start_http_server(8000)
+start_http_server(8000)        
 main()

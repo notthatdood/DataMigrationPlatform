@@ -1,22 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mysqlconnector
+  name: espublisher
   labels:
-    app: mysqlconnector
+    app: espublisher
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: mysqlconnector
+      app: espublisher
   template:
     metadata:
       labels:
-        app: mysqlconnector
+        app: espublisher
     spec:
       containers:
-      - name: mysqlconnector
-        image: israelhercam/mysqlconnector-image
+      - name: espublisher
+        image: israelhercam/espublisher-image
         resources:
           limits:
             memory: "128Mi"

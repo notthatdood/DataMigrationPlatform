@@ -1,22 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mysqlconnector
+  name: sqlprocessor
   labels:
-    app: mysqlconnector
+    app: sqlprocessor
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: mysqlconnector
+      app: sqlprocessor
   template:
     metadata:
       labels:
-        app: mysqlconnector
+        app: sqlprocessor
     spec:
       containers:
-      - name: mysqlconnector
-        image: israelhercam/mysqlconnector-image
+      - name: sqlprocessor
+        image: israelhercam/sqlprocessor-image
         resources:
           limits:
             memory: "128Mi"

@@ -1,4 +1,3 @@
 pika
 elasticsearch
-mysql
-mariadb
+prometheus_client

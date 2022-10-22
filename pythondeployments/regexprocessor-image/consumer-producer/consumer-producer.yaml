@@ -1,44 +1,23 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: orchestrator
+  name: regexprocessor
   labels:
-    app: orchestrator
+    app: regexprocessor
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
-      app: orchestrator
+      app: regexprocessor
   template:
     metadata:
       labels:
-        app: orchestrator
+        app: regexprocessor
     spec:
       containers:
-      - name: orchestrator
-        image: israelhercan/orchestrator-image
+      - name: regexprocessor
+        image: israelhercam/regexprocessor-image
         resources:
           limits:
             memory: "128Mi"
             cpu: "500m"
-        env:
-          - name: DATAFROMK8S
-            value: "Hey"
-          - name: RABBITMQ
-            value: "databases-rabbitmq"
-          - name: RABBITQUEUE
-            value: "queue"
-          - name: RABITPASS
-            valueFrom:
-              secretKeyRef:
-                name: databases-rabbitmq
-                key: rabbitmq-password
-                optional: false
-          - name: ESENDPOINT
-            value: quickstart-es-default #validar
-          - name: ESPASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: quickstart-es-elastic-user #validar
-                key: elastic
-                optional: false
