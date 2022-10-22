@@ -25,12 +25,15 @@ pip install mariadb
 pip install prometheus-client
 ```  
 2. Abrir el powershell y buscar el repositorio del proyecto
-3. 
 
-1.Desde línea de comandos en Windows se debe ejecutar:
+3. Ejecutar el script llamado "createEverything.ps1"
+
 ```sh
 ./createEverything.ps1
-```  
+``` 
+[![Captura.png](https://i.postimg.cc/vTgHB5Xz/Captura.png)](https://postimg.cc/WqVPYFBF)
+
+
 **Sin Minikube**  
 
 1.Desde línea de comandos se debe ejecutar:
