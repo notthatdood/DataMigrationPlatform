@@ -1,26 +1,39 @@
-# **Documentación de la tarea 1**
+# **Documentación del Proyecto#1**
 
 ## **Instalación**
 
-  
-Antes de ejecutar cualquier comando se debe tener instalado en el equipo:
+Primero debera de tener instalado las siguientes aplicaciones:
 1. Docker desktop con kubernetes habilitado
-2. Helm
-3. Minikube
+2. Minikube
+3. Helm
 4. Powershell
+5. Lens
 
-**Con Minikube**  
+**Importante**  
 
 Se debe clonar el repo de github: https://github.com/notthatdood/DataMigrationPlatform.
-Luego se abre powershell y se hace un change directory a donde se haya colocado este repo.
+Luego se abre powershell y se hace un change directory a donde se haya colocado el repositorio.
 
-#### Instalar las herramientas de monitoreo y bases de datos
-En la configuración de este helm chart solo están habilitadas prometheus y grafana, thanos está deshabilitada para su instalación. Solo se debe configurar el values.yaml de la carpeta monitoring para habilitarlo. Más adelante ejemplifica.  
+#### Instalar las herramientas principales
+1. Lo primero que tienen que hacer es tener instalado el powerShell, luego correr las dependencias para instalar.
 
-1.Desde línea de comandos en Windows se debe ejecutar:
+```sh
+pip install pika
+pip install elasticsearch
+pip install mysql
+pip install mariadb
+pip install prometheus-client
+```  
+2. Abrir el powershell y buscar el repositorio del proyecto
+
+3. Ejecutar el script llamado "createEverything.ps1"
+
 ```sh
 ./createEverything.ps1
-```  
+``` 
+[![Captura.png](https://i.postimg.cc/vTgHB5Xz/Captura.png)](https://postimg.cc/WqVPYFBF)
+
+
 **Sin Minikube**  
 
 1.Desde línea de comandos se debe ejecutar:
@@ -117,8 +130,7 @@ Habilitamos el service monitor para las métricas.
 
 ## **Conclusiones**  
 
-La Tarea fue bastante interesante para aprender y saber configurar e intalar los tipos base de datos SQL y NoSQL mediante kubernetes. Fue interesante aprender instalar el docker desktop, helm, minikube y poder activar los kubernetes, aunque todo fue instalacion y seguir los pasos fue una leccion para otros proyectos. Al igual fue con las instalacion de Prometheus y Grafana, ninguno esperaba que fuera complicado hacer las configuraciones para que las app funcionaran y es algo que el equipo aprendio.
-Fue interesante hacer los benchmarks para cada tipo de base de datos SQL y NoSQL y se aprendio que para cada base de datos mediante kubernetes se tiene que modelar dirente para que pueda funcionar.
+
   
 ## **Recomendaciones**  
 
@@ -128,6 +140,7 @@ Fue interesante hacer los benchmarks para cada tipo de base de datos SQL y NoSQL
 
 * Otra recomendacion seria, lo mas accesible y comodo para trabajar es configurar la terminal de linux dentro del PowerShell como extension, aunque se puede trabajar desde la misma terminal de ubuntu a la hora de correr comandos y scripts es mas agradable trabajarlo todo desde el PowerShell ademas la terminal de ubuntu tiene algunos fallos y no te deja correrlo.
 
-## **Referencias**
 
+## **Referencias Bibliograficas**
 
+*
