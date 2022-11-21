@@ -28,7 +28,7 @@ helm dependency update components
 #importante primero instalar el de monitoring para que se cree la definición del serviceMonitor
 helm install monitoring monitoring
 helm install databases databases #--render-subchart-notes
-#helm install components components
+helm install components components
 
 
 
@@ -51,5 +51,5 @@ helm install databases databases #--render-subchart-notes
 #para desinstalar 
 #helm delete "releaseName"
 
-#para borrar minikube
+#para borrar minikube cluster
 #minikube delete minikube

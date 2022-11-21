@@ -11,7 +11,7 @@ from elasticsearch import Elasticsearch
 #Escuchar db de elasticSearch
 
 #Create a metric in prometheus to track time spent and requests made.
-REQUEST_TIME = Summary('request_processing_seconds', 'Time spent processing request')
+#REQUEST_TIME = Summary('request_processing_seconds', 'Time spent processing request')
 
 def getTotalRegisters(expression, datasource, groupSize):
     #MariaDB connection
@@ -66,7 +66,7 @@ def processJob(resp, es, channel, connection):
 
 
 # Decorate function with metric.
-@REQUEST_TIME.time()
+#@REQUEST_TIME.time()
 def main():
     #RabbitMQ connection
     credentials = pika.PlainCredentials('user', 'password')
@@ -82,5 +82,5 @@ def main():
         processJob(dict(resp), es, channel, connection)
 
 # Start up the server to expose the metrics.
-start_http_server(8000)        
+#start_http_server(8000)        
 main()

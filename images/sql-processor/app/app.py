@@ -11,7 +11,7 @@ from prometheus_client import start_http_server, Summary
 urllib3.disable_warnings()
 
 #Create a metric in prometheus to track time spent and requests made.
-REQUEST_TIME = Summary('request_processing_seconds', 'Time spent processing request')
+#REQUEST_TIME = Summary('request_processing_seconds', 'Time spent processing request')
 
 #Takes the sql query with the replaced values and queries the mariadb
 def executeSQLExpression(exp, datasource, job, es, channel):
@@ -83,7 +83,7 @@ def processJob(resp, es, job, channel):
                             break
 
 # Decorate function with metric.
-@REQUEST_TIME.time()
+#@REQUEST_TIME.time()
 def main():
     #RabbitMQ connection
     credentials = pika.PlainCredentials('user', 'password')
@@ -108,5 +108,5 @@ def main():
     channel.start_consuming()
 
 # Start up the server to expose the metrics.
-start_http_server(8000)
+#start_http_server(8000)
 main()

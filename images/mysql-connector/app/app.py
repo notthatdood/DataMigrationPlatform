@@ -11,7 +11,7 @@ import mariadb
 from prometheus_client import start_http_server, Summary
 
 #Create a metric in prometheus to track time spent and requests made.
-REQUEST_TIME = Summary('request_processing_seconds', 'Time spent processing request')
+#REQUEST_TIME = Summary('request_processing_seconds', 'Time spent processing request')
 
 def processJob(es,channel,connection, resp, job):
     job=job[2:]
@@ -60,9 +60,11 @@ def processJob(es,channel,connection, resp, job):
 
 def updateES(es, job):
     resp = es.search(index="groups", query={"match_all": {}})
+    print("document job: ", job)
     print("\n--------------------------------------------\n",resp["hits"]["hits"])
     for hit in resp["hits"]["hits"]:
         if hit["_source"]["job_id"]==job["job_id"]:
+            print("document job: ", job)
             resp = es.index(index="groups", id=hit["_id"] , document=job)
     #print(resp['_source'])
 
@@ -85,7 +87,7 @@ def sendToQueue(channel, doc, resp):
                                 return
     
 # Decorate function with metric.
-@REQUEST_TIME.time()
+#@REQUEST_TIME.time()
 def main():
     #RabbitMQ connection
     credentials = pika.PlainCredentials('user', 'password')
@@ -115,7 +117,7 @@ def main():
 if __name__ == '__main__':
     try:
         # Start up the server to expose the metrics.
-        start_http_server(8000)
+        #start_http_server(8000)
         main()
     except KeyboardInterrupt:
         print('Interrupted')

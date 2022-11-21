@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: test-app1
+  name: sql-processor
   labels:
-    app: test-app1
+    app: sql-processor
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: test-app1
+      app: sql-processor
   template:
     metadata:
       labels:
-        app: test-app1
+        app: sql-processor
     spec:
       containers:
-      - name: test-app1
-        image: notthatdude/test-app1
+      - name: sql-processor
+        image: notthatdude/sql-processor

@@ -4,7 +4,7 @@
 import json 
 from elasticsearch import Elasticsearch
 #Escuchar db de elasticSearch
-es = Elasticsearch(hosts="https://localhost:9200", http_auth=("elastic","password"),verify_certs=False)
+es = Elasticsearch(hosts="https://localhost:9200", basic_auth=("elastic","password"), verify_certs=False)
 
 doc= {
     "job_id": "job606",
