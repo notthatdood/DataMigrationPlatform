@@ -73,7 +73,7 @@ def main():
     connection = pika.BlockingConnection(pika.ConnectionParameters('components-rabbitmq',5672,'/',credentials))
     channel = connection.channel()
     #ES connection
-    es = Elasticsearch(hosts="https://databases-elasticsearch:9200", http_auth=("elastic","password"),verify_certs=False)
+    es = Elasticsearch(hosts="https://databases-elasticsearch:9200", basic_auth=("elastic","password"),verify_certs=False)
     #Acquiring job table
     while(True):
         es.indices.refresh(index="jobs")
