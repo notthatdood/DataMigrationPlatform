@@ -38,6 +38,7 @@ helm install components components
 #port forwarding de ES y rabbitmq
 #kubectl port-forward --namespace default svc/databases-elasticsearch 9200:9200
 #kubectl port-forward --namespace default svc/components-rabbitmq 5672:5672
+#kubectl port-forward --namespace default svc/databases-mariadb 3306:3306
 
 #para ver el estado de los pods puede ser en lens o con este comando
 #kubectl get pods

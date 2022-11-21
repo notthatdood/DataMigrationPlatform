@@ -5,8 +5,5 @@ dependencies:
 - name: grafana
   repository: https://charts.bitnami.com/bitnami
   version: 8.2.8
-- name: thanos
-  repository: https://charts.bitnami.com/bitnami
-  version: 11.5.0
-digest: sha256:835ae74b1a4ddaba2c525fab41ac561faf9f7bb8f0ace2f060d2f28ff0527352
-generated: "2022-09-15T22:36:46.4757893-06:00"
+digest: sha256:f0fb4aa5eb386fa5842a8f62b0ac3e8c35702c38858b6a490b403b9fa58f81c5
+generated: "2022-11-17T23:07:50.7205868-06:00"

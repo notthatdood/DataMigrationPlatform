@@ -33,8 +33,3 @@ dependencies:
       version: "8.2.8"
       repository: https://charts.bitnami.com/bitnami
       condition: enableGrafana
-
-    - name: thanos
-      version: "11.5.0"
-      repository: https://charts.bitnami.com/bitnami
-      condition: enableThanos

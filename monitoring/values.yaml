@@ -1,15 +1,8 @@
 enablePrometheus: true
 enableGrafana: true
-enableThanos: false
 
 grafana:
   admin:
     password: password
-
-thanos:
-  volumePermissions:
-    enabled: true
-  metrics:
-    enabled: true
-    serviceMonitor:
-      enabled: true
+  service: 
+    type: NodePort
