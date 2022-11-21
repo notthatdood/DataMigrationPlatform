@@ -65,6 +65,8 @@ insertJob.py
  * Como recomendación, para importar un dashboard se debe crear primero el data sources de prometheus. Esto se debe a que en el dashboard hay indicarle prometheus como data source.
  * Tener todo instalado (helm, minikube, etc) ya que todo es importante y primordial.
  * Buscar las imagen de python en linux fue bastante complicado ya que no funcionaban las imagenes de MariaDB. Sin embargo se solucionó seleccionando una versión específica de mariaDB e importando una librería adicional.
+ * Se pudo haber hecho un mejor manejo de errores
+ * Faltó pasar las variables de entorno
 
 ## **Referencias Bibliograficas**
 
