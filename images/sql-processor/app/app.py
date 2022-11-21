@@ -78,8 +78,6 @@ def processJob(resp, es, job, channel):
                                     channel.queue_declare(queue=q)
                                     channel.basic_publish(exchange='', routing_key= q, body=json.dumps(job))
                                     print("Sent to queue", q)
-                            #Vamos a eliminar todos los transformations ya hechos para evitar que se repitan
-                            #Es una opción pero si hay más de un grupo no sirve
                             break
 
 # Decorate function with metric.
