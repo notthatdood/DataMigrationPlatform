@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: regex-processor
+  labels:
+    app: regex-processor
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: regex-processor
+  template:
+    metadata:
+      labels:
+        app: regex-processor
+    spec:
+      containers:
+      - name: regex-processor
+        image: notthatdude/regex-processor

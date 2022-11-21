@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: elasticsearch-publisher
+  labels:
+    app: elasticsearch-publisher
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: elasticsearch-publisher
+  template:
+    metadata:
+      labels:
+        app: elasticsearch-publisher
+    spec:
+      containers:
+      - name: elasticsearch-publisher
+        image: notthatdude/elasticsearch-publisher

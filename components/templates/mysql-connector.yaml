@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql-connector
+  labels:
+    app: mysql-connector
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql-connector
+  template:
+    metadata:
+      labels:
+        app: mysql-connector
+    spec:
+      containers:
+      - name: mysql-connector
+        image: notthatdude/mysql-connector
