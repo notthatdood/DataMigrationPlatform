@@ -76,10 +76,12 @@ def main():
     es = Elasticsearch(hosts="https://databases-elasticsearch:9200", basic_auth=("elastic","password"),verify_certs=False)
     #Acquiring job table
     while(True):
-        es.indices.refresh(index="jobs")
-        resp = es.search(index="jobs", query={"match_all": {}})
-        print("Got %d Hits:" % resp['hits']['total']['value'])
-        processJob(dict(resp), es, channel, connection)
+        if(es.indices.exists(index=["jobs"])):
+            es.indices.refresh(index="jobs")
+            resp = es.search(index="jobs", query={"match_all": {}})
+            print("Got %d Hits:" % resp['hits']['total']['value'])
+            processJob(dict(resp), es, channel, connection)
+        time.sleep(10)
 
 # Start up the server to expose the metrics.
 #start_http_server(8000)        
